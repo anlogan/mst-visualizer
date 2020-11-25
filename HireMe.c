@@ -93,6 +93,8 @@ int main(int argc, char* argv[])
 {
     if (argc > 1) {
        // input = argv[1]; 
+       // TODO: Support input from command line that parses and tokenizes string of 64 hex values to
+       // 32 u8's
     }
     u8 target[]="Hire me!!!!!!!!";
     u8 output[32];
