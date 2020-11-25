@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -90,10 +91,13 @@ void Forward(u8 c[32],u8 d[32],u8 s[512],u32 p[32])
 
 int main(int argc, char* argv[])
 {
+    if (argc > 1) {
+       // input = argv[1]; 
+    }
     u8 target[]="Hire me!!!!!!!!";
     u8 output[32];
 
     Forward(input,output,confusion,diffusion);
-
-    return memcmp(output,target,16); // => contact jobs(at)nerd.nintendo.com
+    !(memcmp(output,target,16)) ? printf("\033[1;32mCORRECT!!!!\033[0m\n") : printf("\033[0;31m~~~ WRONG ~~~\033[0m\n");
+    return 0;
 }
