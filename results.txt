@@ -1,0 +1,32 @@
+input[c] = 106 and input[c] = 18, with 2 occurances of target
+input[c] = 309 and input[c] = 445
+input[c] = 106 and input[c] = 80, with 2 occurances of target
+input[c] = 309 and input[c] = 403
+input[c] = 106 and input[c] = 32, with 2 occurances of target
+input[c] = 309 and input[c] = 258
+input[c] = 106 and input[c] = 239, with 2 occurances of target
+input[c] = 309 and input[c] = 472
+input[c] = 106 and input[c] = 446, with 1 occurances of target
+input[c] = 309 and input[c] = 446
+input[c] = 106 and input[c] = 155, with 2 occurances of target
+input[c] = 309 and input[c] = 323
+input[c] = 106 and input[c] = 239, with 2 occurances of target
+input[c] = 309 and input[c] = 472
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 130, with 2 occurances of target
+input[c] = 309 and input[c] = 344
+input[c] = 106 and input[c] = 106, with 2 occurances of target
+input[c] = 309 and input[c] = 309
