@@ -51,22 +51,22 @@ u8 input[32]={
         //
 };
 
-void Forward(u8 c[32],u8 d[32],u8 s[512],u32 p[32])
+void Forward(u8 input[32],u8 output[32],u8 confusion[512],u32 diffusion[32])
 {
     for(u32 i=0;i<256;i++)
     {
         for(u8 j=0;j<32;j++)
         {
-            d[j]=s[c[j]];
-            c[j]=0;
+            output[j]=confusion[input[j]];
+            input[j]=0;
         }
 
         for(u8 j=0;j<32;j++)
             for(u8 k=0;k<32;k++)
-                c[j]^=d[k]*((p[j]>>k)&1);
+                input[j]^=output[k]*((diffusion[j]>>k)&1);
     }
     for(u8 i=0;i<16;i++)
-        d[i]=s[c[i*2]]^s[c[i*2+1]+256];
+        output[i]=confusion[input[i*2]]^confusion[input[i*2+1]+256];
 }
 
 /*
