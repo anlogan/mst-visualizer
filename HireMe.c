@@ -53,6 +53,7 @@ u8 input[32]={
 
 void Forward(u8 input[32],u8 output[32],u8 confusion[512],u32 diffusion[32])
 {
+    /*
     for(u32 i=0;i<256;i++)
     {
         for(u8 j=0;j<32;j++)
@@ -65,8 +66,25 @@ void Forward(u8 input[32],u8 output[32],u8 confusion[512],u32 diffusion[32])
             for(u8 k=0;k<32;k++)
                 input[j]^=output[k]*((diffusion[j]>>k)&1);
     }
+    */
     for(u8 i=0;i<16;i++)
+        /* Hire me!!!!!!!! in hex
+        48 69 72 65 20 6d 65 21 21 21 21 21 21 21 21
+        01001000 0110100101110010011001010010000001101101011001010010000100100001001000010010000100100001001000010010000100100001
+        goal one: get H in the first index of output, which can be seen above
+        two approaches: xor (01000001 and 0000101) or xor (01001000 and 00000000) (among many others)
+        []
+        */
         output[i]=confusion[input[i*2]]^confusion[input[i*2+1]+256];
+}
+
+void searchConfusion(u8 confusion[512], u8 target){
+    for (int i =0; i<512; i++){
+        if (confusion[i]==target){
+            printf("%x occurs at index %u\n", target, i);
+            printf("confusion value at %d is %u\n", i, confusion[i]);
+        }
+    }
 }
 
 /*
@@ -101,5 +119,7 @@ int main(int argc, char* argv[])
 
     Forward(input,output,confusion,diffusion);
     !(memcmp(output,target,16)) ? printf("\033[1;32mCORRECT!!!!\033[0m\n") : printf("\033[0;31m~~~ WRONG ~~~\033[0m\n");
+    searchConfusion(confusion, 0x48);
     return 0;
 }
+
