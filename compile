@@ -1,2 +1,2 @@
-gcc -c HireMe.c
+gcc -g -c HireMe.c
 gcc HireMe.o -o RUN
