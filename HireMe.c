@@ -116,10 +116,55 @@ void createLevel3Input(u8 target[32], u8 input[32])
         }
     }
 }
-// Helper Function
-// 1. find target[i] in confusion
-// 2. find 0x00
-// 3. return confusion[value] ^ confusion[value2]
+
+/*
+   The solutions to this challenge belong to different levels :
+
+   Level 1 : an iterative algorithm which typically takes more than a second to
+   find a solution (for any given output). 
+
+   Most people stop here, which is fine, but if you want to go further, there is :
+
+   Level 2 : a non-iterative algorithm which typically takes less than a
+   millisecond to find a solution (for any given output).
+
+   Very few people have reached this level. But if you want to beat it completely,
+   there's yet another castle...
+
+   Level 3 : an algorithm which can provide any of the 2^128 solutions (for any
+   given output).
+
+   No-one has reached this level yet !
+   */
+       
+
+int main(int argc, char *argv[])
+{
+    u8 input[32];
+    u8 target[]="Hire me!!!!!!!!";
+    createLevel3Input(target, input);
+    u8 output[32];
+
+    Forward(input, output, confusion, diffusion);
+
+    // Print our string we created
+    for (int i = 0; i < 16; i++)
+    {
+        printf("%c", (char)output[i]);
+    }
+    printf("\n");
+
+    !(memcmp(output, target, 16)) ? printf("\033[1;32mCORRECT!!!!\033[0m\n") : printf("\033[0;31m~~~ WRONG ~~~\033[0m\n");
+
+    
+
+    return 0;
+}
+/*
+ Helper Function
+ 1. find target[i] in confusion
+ 2. find 0x00
+ 3. return confusion[value] ^ confusion[value2]
 void searchConfusion(u8 confusion[512], u8 target)
 {
     int nullValueIndex[2];
@@ -151,40 +196,14 @@ void searchConfusion(u8 confusion[512], u8 target)
 
     printf("input[c] = %d and input[c] = %d, with %d occurances of target\n", nullValueIndex[0], targetIndex[0], count);
     printf("input[c] = %d and input[c] = %d\n", nullValueIndex[1], (count > 1) ? targetIndex[1] : targetIndex[0]);
-    // printf("Output = %#x ^ %#x == %#x\n", confusion[nullValueIndex], confusion[targetIndex], confusion[nullValueIndex]^ confusion[targetIndex] );
+     printf("Output = %#x ^ %#x == %#x\n", confusion[nullValueIndex], confusion[targetIndex], confusion[nullValueIndex]^ confusion[targetIndex] );
 }
-
-/*
-   The solutions to this challenge belong to different levels :
-
-   Level 1 : an iterative algorithm which typically takes more than a second to
-   find a solution (for any given output). 
-
-   Most people stop here, which is fine, but if you want to go further, there is :
-
-   Level 2 : a non-iterative algorithm which typically takes less than a
-   millisecond to find a solution (for any given output).
-
-   Very few people have reached this level. But if you want to beat it completely,
-   there's yet another castle...
-
-   Level 3 : an algorithm which can provide any of the 2^128 solutions (for any
-   given output).
-
-   No-one has reached this level yet !
-   */
-/* Hire me!!!!!!!! in hex
-       48 69 72 65 20 6d 65 21 21 21 21 21 21 21 21
-       01001000 0110100101110010011001010010000001101101011001010010000100100001001000010010000100100001001000010010000100100001
-       goal one: get H in the first index of output, which can be seen above
-       two approaches: xor (01000001 and 0000101) or xor (01001000 and 00000000) (among many others)
-       []
-       */
-
-int main(int argc, char *argv[])
-{
-    // 2 different inputs for "Hire me!!!!!!!!"
-    /*
+     Helper function to dissect values
+    for (int i = 0; i < sizeof(target) / sizeof(u8); i++)
+    {
+     searchConfusion(confusion, target[i]);
+     2 different inputs for "Hire me!!!!!!!!"
+    
     u32 input1[32] = {
         106, 445, 106, 403, 106, 258, 106, 472, 106, 446,
         106, 323, 106, 472, 106, 344, 106, 344, 106, 344,
@@ -194,36 +213,20 @@ int main(int argc, char *argv[])
         155, 309, 239, 309, 130, 309, 130, 309, 130, 309,
         130, 309, 130, 309, 130, 309, 130, 309, 130, 309};
 
-    // Have to subtract 256 to make value inside u8 bounds
-    // Comment with input you want to use
+     Have to subtract 256 to make value inside u8 bounds
+     Comment with input you want to use
     u8 input[32];
     for (int i = 0; i < 32; i++)
     {
-        // input[i] = (!i%2) ? (u8)input1[i] : (u8)(input1[i]-256);
+         input[i] = (!i%2) ? (u8)input1[i] : (u8)(input1[i]-256);
         input[i] = (!i % 2) ? (u8)input2[i] : (u8)(input2[i] - 256);
     }
-    */
-    u8 input[32];
-    u8 target[]="Hire me!!!!!!!!";
-    createLevel3Input(target, input);
-    u8 output[32];
+    
+ Hire me!!!!!!!! in hex
+       48 69 72 65 20 6d 65 21 21 21 21 21 21 21 21
+       01001000 0110100101110010011001010010000001101101011001010010000100100001001000010010000100100001001000010010000100100001
+       goal one: get H in the first index of output, which can be seen above
+       two approaches: xor (01000001 and 0000101) or xor (01001000 and 00000000) (among many others)
+       []
 
-    Forward(input, output, confusion, diffusion);
-
-    // Print our string we created
-    for (int i = 0; i < 16; i++)
-    {
-        printf("%c", (char)output[i]);
-    }
-    printf("\n");
-
-    !(memcmp(output, target, 16)) ? printf("\033[1;32mCORRECT!!!!\033[0m\n") : printf("\033[0;31m~~~ WRONG ~~~\033[0m\n");
-
-    // Helper function to dissect values
-    for (int i = 0; i < sizeof(target) / sizeof(u8); i++)
-    {
-        //searchConfusion(confusion, target[i]);
-    }
-
-    return 0;
-}
+*/
