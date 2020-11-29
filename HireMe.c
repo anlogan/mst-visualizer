@@ -45,44 +45,90 @@ u32 diffusion[32] = {
     0xb481f26c, 0xdc9216a5, 0xa9243c5b, 0x524879b6, 0x4b182fc6, 0xcd29615a, 0x9a42c3b5, 0x2584976b,
     0x81b46cf2, 0x92dca516, 0x24a95b3c, 0x4852b679, 0x184bc62f, 0x29cd5a61, 0x429ab5c3, 0x84256b97};
 /*
-u8 input[32]={
-    //change only this :
-    0x66,0xd5,0x4e,0x28,0x5f,0xff,0x6b,0x53,0xac,0x3b,0x34,0x14,0xb5,0x3c,0xb2,0xc6,
-    0xa4,0x85,0x1e,0x0d,0x86,0xc7,0x4f,0xba,0x75,0x5e,0xcb,0xc3,0x6e,0x48,0x79,0x8f
-        //
+   u8 input[32]={
+//change only this :
+0x66,0xd5,0x4e,0x28,0x5f,0xff,0x6b,0x53,0xac,0x3b,0x34,0x14,0xb5,0x3c,0xb2,0xc6,
+0xa4,0x85,0x1e,0x0d,0x86,0xc7,0x4f,0xba,0x75,0x5e,0xcb,0xc3,0x6e,0x48,0x79,0x8f
+//
 };
 */
 
+void createLevel3Input(u8 target[32], u8 input[32]);
+
+void printBinary(u32 n) {
+    int count=0;
+    char string[8] = {'0','0','0','0','0','0','0','0'};
+
+    while (n) {
+        if (n & 1)
+            string[7-count] = '1';
+        else
+            string[7-count] = '0';
+
+        n >>= 1;
+        count++;
+    }
+    printf("%s\n", string);
+}
+
 void Forward(u8 input[32], u8 output[32], u8 confusion[512], u32 diffusion[32])
 {
-    /*
-    for (u32 i = 0; i < 256; i++)
+    //for (u32 i = 0; i < 256; i++)
+    //{
+    for (u8 j = 0; j < 32; j++)
     {
-        for (u8 j = 0; j < 32; j++)
-        {
-            output[j] = confusion[input[j]];
-            input[j] = 0;
-        }
-
-        for (u8 j = 0; j < 32; j++)
-            for (u8 k = 0; k < 32; k++)
-                input[j] ^= output[k] * ((diffusion[j] >> k) & 1);
+        output[j] = confusion[input[j]];
+        input[j] = 0;
     }
-    */
+
+    for (u8 j = 0; j < 32; j++) {
+        for (u8 k = 0; k < 32; k++) {
+            input[j] ^= output[k] * ((diffusion[j] >> k) & 1);
+            // if ((diffusion[j]>>k)&1) printf( "input[%d] ^= output[%d]\n", j, k);
+            // printf("%#x >> %#04x = %#010x which is %d\n", diffusion[j], k, 
+            //         (diffusion[j]>>k), (diffusion[j]>>k) & 1 );
+        }
+        printf("~~~ loop %d ~~~ \n", j);
+        break;
+    }
+    //}
+
     /* Input values hard coded for "Hire me!!!!!!!!"
-        u32 input1[32] = {
-            106, 445, 106, 403, 106, 258, 106, 472, 106, 446, 
-            106, 323, 106, 472, 106, 344, 106, 344, 106, 344,  
-            106, 344, 106, 344, 106, 344, 106, 344, 106, 344 
-        };
-        u32 input2[32] = {
-              18,  309,  80, 309,  32, 309, 239, 309, 106, 446,
-              155, 309, 239, 309, 130, 309, 130, 309, 130, 309, 
-              130, 309, 130, 309, 130, 309, 130, 309, 130, 309
-        };
-    */
+       u32 input1[32] = {
+       106, 445, 106, 403, 106, 258, 106, 472, 106, 446, 
+       106, 323, 106, 472, 106, 344, 106, 344, 106, 344,  
+       106, 344, 106, 344, 106, 344, 106, 344, 106, 344 
+       };
+       u32 input2[32] = {
+       18,  309,  80, 309,  32, 309, 239, 309, 106, 446,
+       155, 309, 239, 309, 130, 309, 130, 309, 130, 309, 
+       130, 309, 130, 309, 130, 309, 130, 309, 130, 309
+       };
+       */
     for (u8 i = 0; i < 16; i++)
         output[i] = confusion[input[i * 2]] ^ confusion[input[i * 2 + 1] + 256];
+}
+
+void testingLevel2 (u8 input[32], u8 output[32]) {
+    // output = createLevel3Input
+    u8 targetInput[32];
+    u8 target[] = "Hire me!!!!!!!!";
+    createLevel3Input(target, targetInput);
+
+    for (u8 j = 0; j < 32; j++) {
+        printf("%u\t", targetInput[j]);
+        printBinary(targetInput[j]);
+        
+    }
+/*
+    for (u8 j = 0; j < 32; j++) {
+
+        for (u8 k = 0; k < 32; k++) {
+            input[j] ^= output[k] * ((diffusion[j] >> k) & 1);
+        }
+          }
+ */        
+
 }
 
 void createLevel3Input(u8 target[32], u8 input[32])
@@ -136,7 +182,7 @@ void createLevel3Input(u8 target[32], u8 input[32])
 
    No-one has reached this level yet !
    */
-       
+
 
 int main(int argc, char *argv[])
 {
@@ -146,6 +192,7 @@ int main(int argc, char *argv[])
     u8 output[32];
 
     Forward(input, output, confusion, diffusion);
+    testingLevel2 ( input[32], output[32]);
 
     // Print our string we created
     for (int i = 0; i < 16; i++)
@@ -156,77 +203,77 @@ int main(int argc, char *argv[])
 
     !(memcmp(output, target, 16)) ? printf("\033[1;32mCORRECT!!!!\033[0m\n") : printf("\033[0;31m~~~ WRONG ~~~\033[0m\n");
 
-    
+
 
     return 0;
 }
 /*
- Helper Function
- 1. find target[i] in confusion
- 2. find 0x00
- 3. return confusion[value] ^ confusion[value2]
-void searchConfusion(u8 confusion[512], u8 target)
-{
-    int nullValueIndex[2];
-    int k = 0;
-    for (int i = 0; i < 512; i++)
-    {
-        if (confusion[i] == 0x00)
-        {
-            nullValueIndex[k++] = i;
-        }
-    }
-    int count = 0;
-    for (int i = 0; i < 512; i++)
-    {
-        if (confusion[i] == target)
-        {
-            count++;
-        }
-    }
-    int targetIndex[count];
-    k = 0;
-    for (int i = 0; i < 512; i++)
-    {
-        if (confusion[i] == target)
-        {
-            targetIndex[k++] = i;
-        }
-    }
+   Helper Function
+   1. find target[i] in confusion
+   2. find 0x00
+   3. return confusion[value] ^ confusion[value2]
+   void searchConfusion(u8 confusion[512], u8 target)
+   {
+   int nullValueIndex[2];
+   int k = 0;
+   for (int i = 0; i < 512; i++)
+   {
+   if (confusion[i] == 0x00)
+   {
+   nullValueIndex[k++] = i;
+   }
+   }
+   int count = 0;
+   for (int i = 0; i < 512; i++)
+   {
+   if (confusion[i] == target)
+   {
+   count++;
+   }
+   }
+   int targetIndex[count];
+   k = 0;
+   for (int i = 0; i < 512; i++)
+   {
+   if (confusion[i] == target)
+   {
+   targetIndex[k++] = i;
+   }
+   }
 
-    printf("input[c] = %d and input[c] = %d, with %d occurances of target\n", nullValueIndex[0], targetIndex[0], count);
-    printf("input[c] = %d and input[c] = %d\n", nullValueIndex[1], (count > 1) ? targetIndex[1] : targetIndex[0]);
-     printf("Output = %#x ^ %#x == %#x\n", confusion[nullValueIndex], confusion[targetIndex], confusion[nullValueIndex]^ confusion[targetIndex] );
-}
-     Helper function to dissect values
-    for (int i = 0; i < sizeof(target) / sizeof(u8); i++)
-    {
-     searchConfusion(confusion, target[i]);
-     2 different inputs for "Hire me!!!!!!!!"
-    
-    u32 input1[32] = {
-        106, 445, 106, 403, 106, 258, 106, 472, 106, 446,
-        106, 323, 106, 472, 106, 344, 106, 344, 106, 344,
-        106, 344, 106, 344, 106, 344, 106, 344, 106, 344};
-    u32 input2[32] = {
-        18, 309, 80, 309, 32, 309, 239, 309, 106, 446,
-        155, 309, 239, 309, 130, 309, 130, 309, 130, 309,
-        130, 309, 130, 309, 130, 309, 130, 309, 130, 309};
+   printf("input[c] = %d and input[c] = %d, with %d occurances of target\n", nullValueIndex[0], targetIndex[0], count);
+   printf("input[c] = %d and input[c] = %d\n", nullValueIndex[1], (count > 1) ? targetIndex[1] : targetIndex[0]);
+   printf("Output = %#x ^ %#x == %#x\n", confusion[nullValueIndex], confusion[targetIndex], confusion[nullValueIndex]^ confusion[targetIndex] );
+   }
+   Helper function to dissect values
+   for (int i = 0; i < sizeof(target) / sizeof(u8); i++)
+   {
+   searchConfusion(confusion, target[i]);
+   2 different inputs for "Hire me!!!!!!!!"
 
-     Have to subtract 256 to make value inside u8 bounds
-     Comment with input you want to use
-    u8 input[32];
-    for (int i = 0; i < 32; i++)
-    {
-         input[i] = (!i%2) ? (u8)input1[i] : (u8)(input1[i]-256);
-        input[i] = (!i % 2) ? (u8)input2[i] : (u8)(input2[i] - 256);
-    }
-    
- Hire me!!!!!!!! in hex
-       48 69 72 65 20 6d 65 21 21 21 21 21 21 21 21
-       01001000 0110100101110010011001010010000001101101011001010010000100100001001000010010000100100001001000010010000100100001
-       goal one: get H in the first index of output, which can be seen above
-       two approaches: xor (01000001 and 0000101) or xor (01001000 and 00000000) (among many others)
-       []
+   u32 input1[32] = {
+   106, 445, 106, 403, 106, 258, 106, 472, 106, 446,
+   106, 323, 106, 472, 106, 344, 106, 344, 106, 344,
+   106, 344, 106, 344, 106, 344, 106, 344, 106, 344};
+   u32 input2[32] = {
+   18, 309, 80, 309, 32, 309, 239, 309, 106, 446,
+   155, 309, 239, 309, 130, 309, 130, 309, 130, 309,
+   130, 309, 130, 309, 130, 309, 130, 309, 130, 309};
+
+   Have to subtract 256 to make value inside u8 bounds
+   Comment with input you want to use
+   u8 input[32];
+   for (int i = 0; i < 32; i++)
+   {
+   input[i] = (!i%2) ? (u8)input1[i] : (u8)(input1[i]-256);
+   input[i] = (!i % 2) ? (u8)input2[i] : (u8)(input2[i] - 256);
+   }
+
+   Hire me!!!!!!!! in hex
+   48 69 72 65 20 6d 65 21 21 21 21 21 21 21 21
+   01001000 0110100101110010011001010010000001101101011001010010000100100001001000010010000100100001001000010010000100100001
+   goal one: get H in the first index of output, which can be seen above
+   two approaches: xor (01000001 and 0000101) or xor (01001000 and 00000000) (among many others)
+   []
 
 */
