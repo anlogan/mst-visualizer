@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -81,16 +82,30 @@ void Forward(u8 input[32], u8 output[32], u8 confusion[512], u32 diffusion[32])
         input[j] = 0;
     }
 
+
+    // Linear algebra some xor's
+
+
     for (u8 j = 0; j < 32; j++) {
         for (u8 k = 0; k < 32; k++) {
             input[j] ^= output[k] * ((diffusion[j] >> k) & 1);
-            ((diffusion[j]>>k)&1) ? printf("1") : printf("0");
+            // input = { output[k] ^ [1 0 1 1 1 0 0] }
+            // ...
+            // output = { input[k] ^ [ ... ](^-1) }
+
+
+
+
+            // ((diffusion[j]>>k)&1) ? printf("1") : printf("0");
             // printf( "input[%d] ^= output[%d]\n", j, k);
             // printf("%#x >> %#04x = %#010x which is %d\n", diffusion[j], k, 
             //         (diffusion[j]>>k), (diffusion[j]>>k) & 1 );
         }
-        printf("\n");
     }
+
+
+    // !!!! WE HAVE INPUT SOLVED TO THIS POINT ^^^^ !!!!!!
+    
     //}
 
     /* Input values hard coded for "Hire me!!!!!!!!"
@@ -107,6 +122,25 @@ void Forward(u8 input[32], u8 output[32], u8 confusion[512], u32 diffusion[32])
        */
     for (u8 i = 0; i < 16; i++)
         output[i] = confusion[input[i * 2]] ^ confusion[input[i * 2 + 1] + 256];
+}
+
+void readInvertedMatrix (bool invertedMatrix[32][32]) {
+    FILE* input_fp;
+    input_fp = fopen("invertedMatrix.txt", "r");
+    if (!input_fp) {
+        printf("Error opening inverted matrix file\n");
+        return;
+    }
+    
+    char c;
+    for (int i =0;i<32; i++) {
+        for (int j = 0; j<32; j++) {
+            c = fgetc(input_fp);
+            invertedMatrix[i][j] = (int)(c - 48); // -48 because ascii 1 and zero are 48 above actual 1 and 0
+        }
+            c = fgetc(input_fp); // Catch the newline at the end of each line
+    }
+
 }
 
 void testingLevel2 (u8 input[32], u8 output[32]) {
@@ -126,7 +160,7 @@ void testingLevel2 (u8 input[32], u8 output[32]) {
         for (u8 k = 0; k < 32; k++) {
             input[j] ^= output[k] * ((diffusion[j] >> k) & 1);
         }
-          }
+    }
  */        
 
 }
@@ -167,8 +201,20 @@ void createLevel3Input(u8 target[32], u8 input[32])
 
 int main(int argc, char *argv[])
 {
+    bool invertedMatrix[32][32];
+    readInvertedMatrix (invertedMatrix);
+
+    printf("Inverted Matrix:\n");
+    for (int i =0;i<32; i++) {
+        for (int j = 0; j<32; j++) {
+            printf("%s", (invertedMatrix[i][j]) ? "1" : "0");
+        }
+            printf("\n");
+    }
+
     u8 input[32];
     u8 target[]="Hire me!!!!!!!!";
+
     createLevel3Input(target, input);
     u8 output[32];
 
@@ -176,12 +222,14 @@ int main(int argc, char *argv[])
     // testingLevel2 ( input, output);
 
     // Print our string we created
+    printf("Our attempted result:\n%");
     for (int i = 0; i < 16; i++)
     {
         printf("%c", (char)output[i]);
     }
     printf("\n");
 
+    // Compare our result to the target
     !(memcmp(output, target, 16)) ? printf("\033[1;32mCORRECT!!!!\033[0m\n") : printf("\033[0;31m~~~ WRONG ~~~\033[0m\n");
 
     return 0;
